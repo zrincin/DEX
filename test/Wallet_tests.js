@@ -18,27 +18,18 @@ contract("DEX", (accounts) => {
       SAND.deployed(),
       USDC.deployed(),
     ]);
-    await Promise.all([
-      dex.addToken(web3.utils.utf8ToHex("LINK"), link.address, {
-        from: accounts[0],
-      }),
-      dex.addToken(web3.utils.utf8ToHex("UNI"), uni.address, {
-        from: accounts[0],
-      }),
-      dex.addToken(web3.utils.utf8ToHex("BAT"), bat.address, {
-        from: accounts[0],
-      }),
-      dex.addToken(web3.utils.utf8ToHex("SAND"), sand.address, {
-        from: accounts[0],
-      }),
-      dex.addToken(web3.utils.utf8ToHex("USDC"), usdc.address, {
-        from: accounts[0],
-      }),
-    ]);
   });
 
   it("Only manager should be able to add new tokens", async () => {
     await truffleAssertions.passes(
+      dex.addToken(web3.utils.utf8ToHex("LINK"), link.address, {
+        from: accounts[0],
+      })
+    );
+  });
+
+  it("It shouldn't be possible to add new tokens more than once", async () => {
+    await truffleAssertions.reverts(
       dex.addToken(web3.utils.utf8ToHex("LINK"), link.address, {
         from: accounts[0],
       })
@@ -54,8 +45,10 @@ contract("DEX", (accounts) => {
   });
 
   it("Should manage deposits correctly", async () => {
-    const amount = web3.utils.toWei("1000");
-    await uni.faucet(accounts[0], amount);
+    await dex.addToken(web3.utils.utf8ToHex("UNI"), uni.address, {
+      from: accounts[0],
+    });
+    await uni.faucet(accounts[0], 1000);
     await uni.approve(dex.address, 100, { from: accounts[0] });
     await dex.deposit(web3.utils.utf8ToHex("UNI"), 50);
     let balance = await dex.traderBalances(
