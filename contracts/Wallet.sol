@@ -33,6 +33,7 @@ contract Wallet {
     }
 
     function addToken(bytes32 ticker, address tokenAddress) external onlyManager {
+        require(tokens[ticker].tokenAddress == address(0), "ERROR: Token already added");
         tokens[ticker] = Token(ticker, tokenAddress);
         tokenList.push(ticker);
     } 
@@ -47,8 +48,4 @@ contract Wallet {
         traderBalances[msg.sender][ticker] -= amount;
         IERC20(tokens[ticker].tokenAddress).transfer(msg.sender, amount);
     }
-
 }
-
-
-

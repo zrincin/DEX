@@ -40,7 +40,7 @@ contract DEX is Wallet {
         );
 
     modifier notUSDC(bytes32 ticker) {
-        require(ticker !=USDC, "ERROR: USDC cannot be traded");
+        require(ticker != USDC, "ERROR: USDC cannot be traded");
         _;
     }
 
