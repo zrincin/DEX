@@ -29,7 +29,7 @@ contract DEX is Wallet {
     bytes32 constant USDC = bytes32("USDC");
 
     event NewTrade(
-        uint OrderID, 
+        uint orderID, 
         uint tradeID, 
         bytes32 indexed ticker, 
         address indexed trader1, 
